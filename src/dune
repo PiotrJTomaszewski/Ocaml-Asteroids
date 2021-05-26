@@ -1,9 +1,9 @@
 (executable
  (public_name Asteroids)
  (name main)
- ;;(libraries Asteroids tsdl lablbl))
-(libraries Asteroids tsdl)
-;;(link_flags --cclib -lSDL2)
+;; (libraries Asteroids sdl2 lablgl))
+(libraries Asteroids sdl2)
+(link_flags -cclib -lSDL2)
 )
 (env
  (dev
