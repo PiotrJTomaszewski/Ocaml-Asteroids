@@ -1,0 +1,5 @@
+(library
+ (name Asteroids)
+ ;;(libraries tsdl lablgl)
+ (libraries tsdl)
+)
