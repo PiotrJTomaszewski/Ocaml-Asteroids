@@ -1,21 +1,30 @@
-(*
-   Minimal OCaml SDL example. This code is in the public domain.
-   Compile with:
-   ocamlfind ocamlc -package tsdl -linkpkg -o min.byte min.ml
-   ocamlfind ocamlopt -package tsdl -linkpkg -o min.native min.ml
-*)
-
 open Tsdl
 
-let main () = match Sdl.init Sdl.Init.video with
-| Error (`Msg e) -> Sdl.log "Init error: %s" e; exit 1
-| Ok () ->
-    match Sdl.create_window ~w:640 ~h:480 "SDL OpenGL" Sdl.Window.opengl with
-    | Error (`Msg e) -> Sdl.log "Create window error: %s" e; exit 1
-    | Ok w ->
-        Sdl.delay 3000l;
-        Sdl.destroy_window w;
-        Sdl.quit ();
-        exit 0
+
+let init_engine () =
+  match Sdl.init Sdl.Init.video with
+  | Error (`Msg e) -> Sdl.log "Init error: %s" e; exit 1
+  | Ok () -> ()
+
+
+let init_display () =
+  match Sdl.create_window_and_renderer ~w: 800 ~h: 600 Sdl.Window.opengl with
+  | Error (`Msg e) -> Sdl.log "Create window and renderer error %s" e; exit 1
+  | Ok (window, renderer) -> ();
+  Sdl.set_window_title window "Asteroids";
+  (window, renderer)
+
+
+let cleanup () =
+  print_endline "Cleanup";
+  Sdl.quit ()
+
+
+let main () =
+  at_exit cleanup; 
+  init_engine ();
+  let window, renderer = init_display () in
+  Sdl.delay 1000l
+
 
 let () = main ()

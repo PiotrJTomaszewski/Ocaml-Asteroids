@@ -8,7 +8,7 @@
 (env
  (dev
   ;; Disable some errors during development (error list: https://ocaml.org/manual/comp.html) TODO: Change some of them into warnings
-  (flags (:standard -w -35 -w -6 -w -9 -w -27 -w -33 -w -32))
+  (flags (:standard -w -35 -w -6 -w -9 -w -26 -w -27 -w -33 -w -32))
  )
 )
 
