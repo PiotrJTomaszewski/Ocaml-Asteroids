@@ -28,7 +28,7 @@ let init () = {
 
 let render_game renderer textures game =
   Spaceship.render_spaceship renderer (Show.TexMap.find "ufo" textures) game.spaceship;
-  let meteor_texture = (Show.TexMap.find "ufo" textures) in
+  let meteor_texture = (Show.TexMap.find "meteor" textures) in
   Utils.for_each (Meteor.render_meteor renderer meteor_texture) game.meteors;
   Render.render_present renderer;
   ()
