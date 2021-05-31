@@ -30,12 +30,32 @@ let generate_meteor () =
   }
 
 
-let update_meteor_position meteor time_delta = {
+let update_meteor_position meteor time_delta =
+  let meteor_pixel_size = float_of_int(meteor.size * Constants.meteor_size_scale) in
+  let calculated_position_x = meteor.position.x +. (meteor.speed.x *. time_delta) in
+  let calculated_position_y = meteor.position.y +. (meteor.speed.y *. time_delta) in
+  let new_position_x =
+    if calculated_position_x < (-. meteor_pixel_size) then
+      float_of_int(Constants.window_width)
+    else if calculated_position_x > float_of_int(Constants.window_width) then
+      0.
+    else
+      calculated_position_x
+  in
+  let new_position_y =
+    if calculated_position_y < (-. meteor_pixel_size) then
+      float_of_int(Constants.window_height)
+    else if calculated_position_y > float_of_int(Constants.window_height) then
+      0.
+    else
+      calculated_position_y
+  in
+  {
     meteor with
       position = {
-        x = meteor.position.x +. (meteor.speed.x *. float_of_int(time_delta));
-        y = meteor.position.y +. (meteor.speed.y *. float_of_int(time_delta));
-      }
+        x = new_position_x;
+        y = new_position_y;
+      };
   }
 
 
