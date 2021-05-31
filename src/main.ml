@@ -1,15 +1,14 @@
 open Sdl;;
-
-(* let change_pos pos da db =
-  match pos with (a,b) -> (a+da,b+db) *)
+open Common;;
 
 
 let proc_events game ev = 
   match ev with
-    Event.KeyDown { Event.keycode = Keycode.Left;_ } -> game
-  | Event.KeyDown { Event.keycode = Keycode.Right;_ } -> game
-  | Event.KeyDown { Event.keycode = Keycode.Up;_ } -> game
-  | Event.KeyDown { Event.keycode = Keycode.Down;_ } -> game
+    Event.KeyDown { Event.keycode = Keycode.Left;_ } -> Game.process_inputs game Left
+  | Event.KeyDown { Event.keycode = Keycode.Right;_ } -> Game.process_inputs game Right
+  | Event.KeyDown { Event.keycode = Keycode.Up;_ } -> Game.process_inputs game Up
+  | Event.KeyDown { Event.keycode = Keycode.Down;_ } -> Game.process_inputs game Down
+  | Event.KeyDown { Event.keycode = Keycode.Space;_ } -> Game.process_inputs game Fire
   | Event.KeyDown { Event.keycode = Keycode.Q;_ } -> (Sdl.quit (); exit 0)
   | Event.KeyDown { Event.keycode = Keycode.Escape;_ } -> (Sdl.quit (); exit 0)
   | Event.Window_Event {Event.kind = Event.WindowEvent_Close;_} -> (Sdl.quit (); exit 0)
@@ -43,7 +42,6 @@ let main () =
     Timer.delay ~ms:16;
     main_loop (event_loop game 16)
   in
-  (* let pos = (100,100) in *)
     main_loop (Game.init ());;
 
 let () = main ()

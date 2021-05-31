@@ -18,8 +18,8 @@ let init () = {
   score = 0;
   lifes = 3;
   spaceship = {
-    position = {x = 400.; y = 300.;};
-    speed = {x = 0.05; y = -0.05;};
+    position = {x = float_of_int (Constants.window_width/2); y = float_of_int (Constants.window_height/2);};
+    speed = {x = 0.; y = 0.;};
     angle = 0.;
   };
   meteors = init_meteors (Random.int Constants.max_metor_init_count);
@@ -40,4 +40,11 @@ let update_time game time_delta =
     game with
       spaceship = Spaceship.update_spaceship_position game.spaceship time_delta_float;
       meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) game.meteors
+  }
+
+
+let process_inputs game action =
+  {
+    game with
+    spaceship = Spaceship.move_spaceship game.spaceship action
   }
