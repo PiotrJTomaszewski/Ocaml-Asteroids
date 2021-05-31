@@ -27,7 +27,7 @@ let main () =
   Sdl.init [`VIDEO];(*initialization of sdl2 subsystem*)
   Sdlimage.init [`PNG];
   let window, renderer =
-    Sdl.Render.create_window_and_renderer ~width:800 ~height:600 ~flags:[] (*opening window*)
+    Sdl.Render.create_window_and_renderer ~width:Constants.window_width ~height:Constants.window_height ~flags:[] (*opening window*)
   in
   Window.set_title ~window:window ~title:"ocaml-asteroids";
   (*pos: state of point (int * int) *)
