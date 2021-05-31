@@ -20,13 +20,13 @@ let init () = {
   spaceship = {
     position = {x = 400.; y = 300.;};
     speed = {x = 0.05; y = -0.05;};
+    angle = 0.;
   };
   meteors = init_meteors (Random.int Constants.max_metor_init_count);
 }
 
 
 let render_game renderer textures game =
-
   Spaceship.render_spaceship renderer (Show.TexMap.find "ufo" textures) game.spaceship;
   let meteor_texture = (Show.TexMap.find "ufo" textures) in
   Utils.for_each (Meteor.render_meteor renderer meteor_texture) game.meteors;
@@ -34,8 +34,10 @@ let render_game renderer textures game =
   ()
 
 
-let update_time game time_delta = {
-  game with
-    spaceship = Spaceship.update_spaceship_position game.spaceship time_delta;
-    meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta) game.meteors
-}
+let update_time game time_delta = 
+  let time_delta_float = float_of_int time_delta in
+  {
+    game with
+      spaceship = Spaceship.update_spaceship_position game.spaceship time_delta_float;
+      meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) game.meteors
+  }
