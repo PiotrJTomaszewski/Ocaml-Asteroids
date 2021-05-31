@@ -23,8 +23,8 @@ let generate_meteor () =
       | _ -> {x = Random.float (max_x +. 1.); y = max_y};
     );
     speed = {
-      x = (Random.float (Constants.max_meteor_speed +. 1. -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed;
-      y = (Random.float (Constants.max_meteor_speed +. 1. -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed
+      x = (Random.float (Constants.max_meteor_speed -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed;
+      y = (Random.float (Constants.max_meteor_speed -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed
     };
     size = size;
   }
@@ -33,10 +33,13 @@ let generate_meteor () =
 let update_meteor_position meteor time_delta = {
     meteor with
       position = {
-        x = meteor.position.x +. (meteor.speed.x *. time_delta);
-        y = meteor.position.y +. (meteor.speed.y *. time_delta);
+        x = meteor.position.x +. (meteor.speed.x *. float_of_int(time_delta));
+        y = meteor.position.y +. (meteor.speed.y *. float_of_int(time_delta));
       }
   }
 
 
-let render_meteor renderer meteor = ()
+let render_meteor renderer texture meteor =
+  Show.put_texture renderer  (int_of_float meteor.position.x, int_of_float(meteor.position.y)) texture 64 64 45.0
+    (* (meteor.size * Constants.meteor_size_scale)
+    (meteor.size * Constants.meteor_size_scale) *)

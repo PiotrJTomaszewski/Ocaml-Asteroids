@@ -1,28 +1,26 @@
 open Sdl;;
 
+(* let change_pos pos da db =
+  match pos with (a,b) -> (a+da,b+db) *)
 
 
-let change_pos pos da db =
-  match pos with (a,b) -> (a+da,b+db)
-
-let proc_events pos ev = 
+let proc_events game ev = 
   match ev with
-    Event.KeyDown { Event.keycode = Keycode.Left;_ } -> (change_pos pos (-10) 0)
-  | Event.KeyDown { Event.keycode = Keycode.Right;_ } -> change_pos pos 10 0
-  | Event.KeyDown { Event.keycode = Keycode.Up;_ } -> change_pos pos 0 (-10)
-  | Event.KeyDown { Event.keycode = Keycode.Down;_ } -> change_pos pos 0 10
+    Event.KeyDown { Event.keycode = Keycode.Left;_ } -> game
+  | Event.KeyDown { Event.keycode = Keycode.Right;_ } -> game
+  | Event.KeyDown { Event.keycode = Keycode.Up;_ } -> game
+  | Event.KeyDown { Event.keycode = Keycode.Down;_ } -> game
   | Event.KeyDown { Event.keycode = Keycode.Q;_ } -> (Sdl.quit (); exit 0)
   | Event.KeyDown { Event.keycode = Keycode.Escape;_ } -> (Sdl.quit (); exit 0)
   | Event.Window_Event {Event.kind = Event.WindowEvent_Close;_} -> (Sdl.quit (); exit 0)
-  | _ -> pos
+  | _ -> game
 ;;
 
-let rec event_loop pos =
+let rec event_loop game time_delta =
   match Event.poll_event () with
-  | None -> change_pos pos 0 1
+  | None -> Game.update_time game time_delta
   | Some ev ->
-      let dir = proc_events pos ev in
-      event_loop dir
+    event_loop (proc_events game ev) time_delta
 
 (*main function*)
 let main () =
@@ -37,14 +35,15 @@ let main () =
       ["ufo"; "meteor"] 
       ["./res/ufo.png";"./res/meteor.png";] 
   in
-  let rec main_loop state =
+  let rec main_loop game =
     Render.set_draw_color renderer ~rgb:Show.black ~a:Show.alpha;
     Render.clear renderer;
-    Show.put_texture renderer state (Show.TexMap.find "ufo" textures) 64 64 45.0;
+    Game.render_game renderer textures game;
+    Render.render_present renderer;
     Timer.delay ~ms:16;
-    main_loop (event_loop state)
+    main_loop (event_loop game 16)
   in
-  let pos = (100,100) in
-  main_loop pos;;
+  (* let pos = (100,100) in *)
+    main_loop (Game.init ());;
 
 let () = main ()

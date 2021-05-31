@@ -54,6 +54,4 @@ list_addresses -> list of locations of PNG (!!) files
 let put_texture render (x,y) texture l1 l2 angle_gr=
     let rect = Rect.make ((x-(l1/2)),(y-(l2/2))) (l1,l2) in
     Render.copyEx render ~texture:texture ~dst_rect:rect () ~angle:angle_gr;
-    Render.render_present render;;
-
-    
+    (* Render.render_present render;; *) (* We only have to call this function once every frame. Calling it after every drawn item is unnecessary *)

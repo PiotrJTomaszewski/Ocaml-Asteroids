@@ -14,12 +14,6 @@ let rec init_meteors counter = match counter with
 ;;
 
 
-let rec render_all_meteors renderer meteors = match meteors with
-  | [] -> ();
-  | hd :: tl -> Meteor.render_meteor renderer hd; render_all_meteors renderer tl;
-;;
-
-
 let init () = {
   score = 0;
   lifes = 3;
@@ -31,16 +25,17 @@ let init () = {
 }
 
 
-let render_game renderer game =
-  Render.set_draw_color renderer (100, 100, 100) 255;
-  Render.clear renderer;
-  Spaceship.render_spaceship renderer game.spaceship;
-  render_all_meteors renderer game.meteors;
+let render_game renderer textures game =
+
+  Spaceship.render_spaceship renderer (Show.TexMap.find "ufo" textures) game.spaceship;
+  let meteor_texture = (Show.TexMap.find "ufo" textures) in
+  Utils.for_each (Meteor.render_meteor renderer meteor_texture) game.meteors;
   Render.render_present renderer;
   ()
 
 
 let update_time game time_delta = {
   game with
-    spaceship = Spaceship.update_spaceship_position game.spaceship time_delta
+    spaceship = Spaceship.update_spaceship_position game.spaceship time_delta;
+    meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta) game.meteors
 }

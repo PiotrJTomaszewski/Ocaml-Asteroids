@@ -2,9 +2,9 @@ let window_height = 600;;
 
 let window_width = 800;;
 
-let min_meteor_speed = 0.01;;
+let min_meteor_speed = 0.1;;
 
-let max_meteor_speed = 0.1;;
+let max_meteor_speed = 0.3;;
 
 let max_meteor_init_size = 5;;
 
