@@ -54,9 +54,7 @@ let rec _split_meteor_loop position  size counter =
       }]
 
 
-let split_meteor_on_collision meteor bullets =
-  (* TODO: Unitl we have collision detection meteors will split on their own *)
-  let is_collision = Random.int 100 < 1 in
+let split_meteor_on_collision meteor is_collision =
   if is_collision then
     if meteor.size > 1 then
       _split_meteor_loop meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split)

@@ -90,34 +90,26 @@ let check_collision (game:game_t) =
   ;;
 
   
-  let check_shoots (game:game_t) = 
-    let bullet_vs_meteor (meteor:Meteor.meteor_t) (bullet:Bullet.bullet_t) = 
-      let size = meteor.size * Constants.meteor_size_scale in
-      let condition = in_collision 16 (size/2) 
-        (Common.pair_float_of_vectorf2d_t bullet.position)
-        (Common.pair_float_of_vectorf2d_t meteor.position)  0 in 
-      let m = if(condition) then {meteor with size=meteor.size-1} else meteor in
-    (m,condition) in
-    let check_bullets meteor bullets = (* For every bullet in the list, it's checked if one meteor collides with bullet*)
-        let rec check_bullets_rec meteor_rec  = function
-          [] -> (meteor_rec,[])
-        | hd::tl ->let (meteor_new,condition) = bullet_vs_meteor meteor_rec hd in 
-              if(condition) then ( (check_bullets_rec meteor_new tl)) else let (m,r) = (check_bullets_rec meteor_new tl) in
-              (m,hd::r)
-        in
-        check_bullets_rec meteor bullets
-      in
-    let check_meteors meteors bl = (*For every meteor we checked if collides with any bullet*)
-      let rec check_meteors_rec bullets = function
-        [] -> ([],bullets)
-      | hd::tl -> let (m,b1) = check_bullets hd bullets in 
-      let (r,b) = check_meteors_rec b1 tl in
-      (Meteor.add_meteor_if_exists m r,b) in
-      check_meteors_rec bl meteors in
-    let (mets,bulls) = check_meteors game.meteors game.bullets in
-    {game with 
-      bullets = bulls;
-      meteors = mets
-    }
-  ;;
+let bullet_vs_meteor  (bullet:Bullet.bullet_t) (meteor:Meteor.meteor_t) = 
+    let size = meteor.size * Constants.meteor_size_scale in
+    let condition = in_collision 16 (size/2) 
+      (Common.pair_float_of_vectorf2d_t bullet.position)
+      (Common.pair_float_of_vectorf2d_t meteor.position)  0 in 
+  (Meteor.split_meteor_on_collision meteor condition,condition)
+  
+let check_meteors meteors bullet =
+  let mapped = List.map (bullet_vs_meteor bullet) meteors in
+  List.fold_left (fun (l1, b) (l2, cond) -> (l1@l2,cond||b)) ([], false) mapped 
+  
 
+let check_bullets bullets meteors = 
+  let rec check_bullets_rec meteors_rec = function
+  [] -> (meteors_rec,[])
+  | hd::tl -> let (new_meteors,condition) = check_meteors meteors_rec hd in
+    if condition then check_bullets_rec new_meteors tl 
+    else let (meteors_stable, rest_of_bullets) = check_bullets_rec new_meteors tl in (meteors_stable,hd::rest_of_bullets)
+  in
+  check_bullets_rec meteors bullets
+let check_shoots (game:game_t) =
+  let (new_meteors,new_bullets) = check_bullets game.bullets game.meteors in 
+  {game with meteors=new_meteors; bullets=new_bullets};
