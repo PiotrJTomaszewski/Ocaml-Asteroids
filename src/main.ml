@@ -39,7 +39,8 @@ let main () =
       ["ufo"; "meteor"; "bullet"] 
       ["./res/ufo.png";"./res/meteor.png"; "./res/placeholder.png"] 
   in
-  let rec main_loop game =
+  let rec main_loop game1 =
+    let game  = (Game.check_shoots game1)in
     match Game.check_collision game with
     true -> main_loop (
       {
@@ -52,7 +53,7 @@ let main () =
     Game.render_game renderer textures game font;
     Render.render_present renderer;
     Timer.delay ~ms:16;
-    main_loop (event_loop game 16)
+    main_loop ( (event_loop game 5))
   in
     main_loop (Game.init ());;
 

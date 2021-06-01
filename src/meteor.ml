@@ -44,3 +44,6 @@ let render_meteor renderer texture meteor =
   let meteor_pixel_size = meteor.size * Constants.meteor_size_scale in
   Show.put_texture renderer  (int_of_float meteor.position.x, int_of_float(meteor.position.y)) texture meteor_pixel_size meteor_pixel_size 45.0
 
+  let add_meteor_if_exists meteor meteor_list =
+    if (meteor.size>0) then meteor::meteor_list else meteor_list
+  ;;

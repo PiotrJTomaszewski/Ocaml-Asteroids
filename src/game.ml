@@ -73,15 +73,49 @@ let process_inputs game action =
       bullets = new_bullets
   }
 ;;
-let in_collision r1 r2 (x,y) (a,b) = (sqrt (Float.of_int ((x-a)*(x-a)+(y-b)*(y-b))) < (float_of_int (r1+r2)))
+let in_collision r1 r2 (x,y) (a,b) tolerancy = (sqrt ((x-.a)*.(x-.a)+.(y-.b)*.(y-.b))) < (float_of_int (r1+r2-tolerancy))
 (*
-  
+  Collisions are detected with simple approximation. Objects are circles and it is checked if
+    sum of 2 radii is is bigger then distance betwen center of objects
 *)
 let check_collision (game:game_t) =
   let ship_vs_meteor (meteor:Meteor.meteor_t) = 
     let size = meteor.size * Constants.meteor_size_scale in
     in_collision (Constants.spaceship_size/2) (size/2) 
-      (int_of_float game.spaceship.position.x,int_of_float game.spaceship.position.y)
-      (int_of_float meteor.position.x,int_of_float meteor.position.y) in
+      (Common.pair_float_of_vectorf2d_t game.spaceship.position)
+      (Common.pair_float_of_vectorf2d_t meteor.position)  (4) in
   let collided = List.map (ship_vs_meteor) game.meteors in
   List.fold_right (|| ) collided false
+  ;;
+
+  
+  let check_shoots (game:game_t) = 
+    let bullet_vs_meteor (meteor:Meteor.meteor_t) (bullet:Bullet.bullet_t) = 
+      let size = meteor.size * Constants.meteor_size_scale in
+      let condition = in_collision 16 (size/2) 
+        (Common.pair_float_of_vectorf2d_t bullet.position)
+        (Common.pair_float_of_vectorf2d_t meteor.position)  0 in 
+      let m = if(condition) then {meteor with size=meteor.size-1} else meteor in
+    (m,condition) in
+    let check_bullets meteor bullets = (* For every bullet in the list, it's checked if one meteor collides with bullet*)
+        let rec check_bullets_rec meteor_rec  = function
+          [] -> (meteor_rec,[])
+        | hd::tl ->let (meteor_new,condition) = bullet_vs_meteor meteor_rec hd in 
+              if(condition) then ( (check_bullets_rec meteor_new tl)) else let (m,r) = (check_bullets_rec meteor_new tl) in
+              (m,hd::r)
+        in
+        check_bullets_rec meteor bullets
+      in
+    let check_meteors meteors bl = (*For every meteor we checked if collides with any bullet*)
+      let rec check_meteors_rec bullets = function
+        [] -> ([],bullets)
+      | hd::tl -> let (m,b1) = check_bullets hd bullets in 
+      let (r,b) = check_meteors_rec b1 tl in
+      (Meteor.add_meteor_if_exists m r,b) in
+      check_meteors_rec bl meteors in
+    let (mets,bulls) = check_meteors game.meteors game.bullets in
+    {game with 
+      bullets = bulls;
+      meteors = mets
+    }
+  ;;
