@@ -8,7 +8,7 @@ type meteor_t = {
 
 let spawn_meteor () =
   (* Bound parameter in Random is exclusive hence +1 everywhere *)
-  let size = (Random.int (Constants.max_meteor_init_size)) + 1 in
+  let size = Utils.random_int 1 Constants.max_meteor_init_size in
   let max_x = float_of_int (Constants.window_width - (size * Constants.meteor_size_scale)) in
   let max_y = float_of_int (Constants.window_height - (size * Constants.meteor_size_scale)) in
   {
@@ -21,8 +21,8 @@ let spawn_meteor () =
       | _ -> {x = Random.float (max_x +. 1.); y = max_y};
     );
     speed = {
-      x = (Random.float (Constants.max_meteor_speed -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed;
-      y = (Random.float (Constants.max_meteor_speed -. Constants.min_meteor_speed)) +. Constants.min_meteor_speed
+      x = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed;
+      y = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed
     };
     size = size;
   }
@@ -38,6 +38,32 @@ let update_meteor_position meteor time_delta =
         y = new_position.y;
       };
   }
+
+
+let rec _split_meteor_loop position  size counter =
+  (* Splitted meteors can skew slightly into a new direction *)
+  match counter with
+    | 0 -> []
+    | _ -> (_split_meteor_loop position size (counter-1))@[{
+      position = position;
+      speed = {
+        x = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed;
+        y = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed
+      };
+      size = size;
+      }]
+
+
+let split_meteor_on_collision meteor bullets =
+  (* TODO: Unitl we have collision detection meteors will split on their own *)
+  let is_collision = Random.int 100 < 1 in
+  if is_collision then
+    if meteor.size > 1 then
+      _split_meteor_loop meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split)
+    else
+      []
+   else
+    [meteor]
 
 
 let render_meteor renderer texture meteor =

@@ -14,7 +14,7 @@ let max_metor_init_count = 4;;
 
 let min_meteor_split = 1;;
 
-let max_meteor_split = 5;;
+let max_meteor_split = 3;;
 
 let meteor_size_scale = 20;;
 

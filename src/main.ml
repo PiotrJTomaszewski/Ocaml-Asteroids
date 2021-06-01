@@ -54,6 +54,7 @@ let main () =
     Render.render_present renderer;
     Timer.delay ~ms:16;
     main_loop ( (event_loop game 5))
+
   in
     main_loop (Game.init ());;
 

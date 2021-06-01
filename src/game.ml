@@ -72,6 +72,7 @@ let process_inputs game action =
       spaceship = new_spaceship;
       bullets = new_bullets
   }
+  
 ;;
 let in_collision r1 r2 (x,y) (a,b) tolerancy = (sqrt ((x-.a)*.(x-.a)+.(y-.b)*.(y-.b))) < (float_of_int (r1+r2-tolerancy))
 (*
@@ -119,3 +120,4 @@ let check_collision (game:game_t) =
       meteors = mets
     }
   ;;
+

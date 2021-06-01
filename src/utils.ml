@@ -38,3 +38,11 @@ let update_position_with_warp position speed obj_pixel_size time_delta =
     x = new_position_x;
     y = new_position_y
   }
+
+
+let random_int min_val max_val =
+  Random.int (max_val - min_val + 1) + min_val
+
+
+let random_float min_val max_val =
+  Random.float (max_val -. min_val) +. min_val
