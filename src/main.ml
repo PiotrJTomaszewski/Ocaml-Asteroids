@@ -42,6 +42,7 @@ let main () =
     Timer.delay ~ms:16;
     main_loop (event_loop game 16)
   in
-    main_loop (Game.init ());;
+  Random.self_init ();
+  main_loop (Game.init ());;
 
 let () = main ()

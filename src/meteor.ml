@@ -58,6 +58,6 @@ let update_meteor_position meteor time_delta =
 
 
 let render_meteor renderer texture meteor =
-  Show.put_texture renderer  (int_of_float meteor.position.x, int_of_float(meteor.position.y)) texture 64 64 45.0
-    (* (meteor.size * Constants.meteor_size_scale)
-    (meteor.size * Constants.meteor_size_scale) *)
+  let meteor_pixel_size = meteor.size * Constants.meteor_size_scale in
+  Show.put_texture renderer  (int_of_float meteor.position.x, int_of_float(meteor.position.y)) texture meteor_pixel_size meteor_pixel_size 45.0
+

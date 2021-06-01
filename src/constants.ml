@@ -10,7 +10,7 @@ let max_meteor_init_size = 5;;
 
 let max_metor_init_count = 10;;
 
-let meteor_size_scale = 10;;
+let meteor_size_scale = 20;;
 
 let spaceship_speed_delta = 0.1;;
 
