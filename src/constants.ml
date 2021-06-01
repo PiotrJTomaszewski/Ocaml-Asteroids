@@ -8,7 +8,13 @@ let max_meteor_speed = 0.3;;
 
 let max_meteor_init_size = 5;;
 
-let max_metor_init_count = 10;;
+let min_meteor_init_count = 2;;
+
+let max_metor_init_count = 4;;
+
+let min_meteor_split = 1;;
+
+let max_meteor_split = 5;;
 
 let meteor_size_scale = 20;;
 

@@ -23,7 +23,7 @@ let init () = {
     speed = {x = 0.; y = 0.;};
     angle = 0.;
   };
-  meteors = init_meteors (Random.int Constants.max_metor_init_count);
+  meteors = init_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count);
   bullets = [];
 }
 
