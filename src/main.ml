@@ -40,7 +40,7 @@ let main () =
     Game.render_game renderer textures game;
     Render.render_present renderer;
     Timer.delay ~ms:16;
-    main_loop (event_loop game 16)
+    main_loop (event_loop (Game.process_collisions game) 16)
   in
   Random.self_init ();
   main_loop (Game.init ());;

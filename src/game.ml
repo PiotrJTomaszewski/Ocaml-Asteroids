@@ -61,3 +61,11 @@ let process_inputs game action =
       spaceship = new_spaceship;
       bullets = new_bullets
   }
+
+
+let process_collisions game =
+  let new_meteors = List.concat_map (fun m -> Meteor.split_meteor_on_collision m game.bullets) game.meteors in
+  {
+    game with
+      meteors = new_meteors
+  }
