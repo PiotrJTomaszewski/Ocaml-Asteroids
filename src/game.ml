@@ -43,7 +43,7 @@ let update_time game time_delta =
     game with
       spaceship = Spaceship.update_spaceship_position game.spaceship time_delta_float;
       meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) game.meteors;
-      bullets = List.map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
+      bullets = List.filter_map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
   }
 
 
