@@ -1,5 +1,3 @@
-open Sdl
-
 type meteor_t = {
   position: Common.vectorf2d_t;
   speed: Common.vectorf2d_t;
@@ -8,7 +6,7 @@ type meteor_t = {
 }
 
 
-let generate_meteor () =
+let spawn_meteor () =
   (* Bound parameter in Random is exclusive hence +1 everywhere *)
   let size = (Random.int (Constants.max_meteor_init_size)) + 1 in
   let max_x = float_of_int (Constants.window_width - (size * Constants.meteor_size_scale)) in

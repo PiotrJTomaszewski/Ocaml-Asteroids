@@ -31,8 +31,8 @@ let main () =
   Window.set_title ~window:window ~title:"ocaml-asteroids";
   (*pos: state of point (int * int) *)
   let textures = Show.load_tex renderer 
-      ["ufo"; "meteor"] 
-      ["./res/ufo.png";"./res/meteor.png";] 
+      ["ufo"; "meteor"; "bullet"] 
+      ["./res/ufo.png";"./res/meteor.png"; "./res/placeholder.png"] 
   in
   let rec main_loop game =
     Render.set_draw_color renderer ~rgb:Show.black ~a:Show.alpha;

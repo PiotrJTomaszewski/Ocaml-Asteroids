@@ -15,3 +15,7 @@ let meteor_size_scale = 10;;
 let spaceship_speed_delta = 0.1;;
 
 let spaceship_max_speed = 0.3;;
+
+let spaceship_size = 64;;
+
+let bullet_speed = 0.6;;

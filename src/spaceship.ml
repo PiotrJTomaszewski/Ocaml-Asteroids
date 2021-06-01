@@ -1,4 +1,3 @@
-open Sdl;;
 open Common;;
 
 type spaceship_t = {
@@ -53,4 +52,4 @@ let move_spaceship spaceship action =
 
 
 let render_spaceship renderer texture spaceship =
-  Show.put_texture renderer (int_of_float spaceship.position.x, int_of_float spaceship.position.y) texture 64 64 spaceship.angle
+  Show.put_texture renderer (int_of_float spaceship.position.x, int_of_float spaceship.position.y) texture Constants.spaceship_size Constants.spaceship_size spaceship.angle
