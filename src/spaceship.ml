@@ -22,18 +22,18 @@ let move_spaceship spaceship action =
   let new_speed = match action with
     | Up -> {
       x = spaceship.speed.x;
-      y = min (spaceship.speed.y -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
+      y = Utils.speed_limit (spaceship.speed.y -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
     }
     | Down -> {
       x = spaceship.speed.x;
-      y = min (spaceship.speed.y +. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
+      y = Utils.speed_limit (spaceship.speed.y +. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
     }
     | Left -> {
-      x = min (spaceship.speed.x -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed;
+      x = Utils.speed_limit (spaceship.speed.x -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed;
       y = spaceship.speed.y
     }
     | Right -> {
-      x = min (spaceship.speed.x +. Constants.spaceship_speed_delta) Constants.spaceship_max_speed;
+      x = Utils.speed_limit (spaceship.speed.x +. Constants.spaceship_speed_delta) Constants.spaceship_max_speed;
       y = spaceship.speed.y
     }
     | Fire -> spaceship.speed
