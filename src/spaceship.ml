@@ -7,13 +7,16 @@ type spaceship_t = {
 }
 
 
-let update_spaceship_position spaceship time_delta = {
-  spaceship with
-    position = {
-      x = spaceship.position.x +. (spaceship.speed.x *. time_delta);
-      y = spaceship.position.y +. (spaceship.speed.y *. time_delta);
-    }
-}
+let update_spaceship_position spaceship time_delta =
+  (* In the original game when the spaceship leaves the screen it teleports to the opposite site *)
+  let new_position = Utils.update_position_with_warp spaceship.position spaceship.speed (float_of_int Constants.spaceship_size) time_delta in
+  {
+    spaceship with
+      position = {
+        x = new_position.x;
+        y = new_position.y;
+      };
+  }
 
 
 let move_spaceship spaceship action =
