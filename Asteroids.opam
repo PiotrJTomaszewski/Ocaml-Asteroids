@@ -6,4 +6,4 @@ description: """
 Asteroids clone written in OCaml and SDL
 """
 authors: "Marcin Gapiński, Piotr Tomaszewski"
-depends: [ "ocaml" "dune" "ocamlsdl2" "ocamlsdl2-image"]
+depends: [ "ocaml" "dune" "ocamlsdl2" "ocamlsdl2-image" "ocamlsdl2-ttf"]

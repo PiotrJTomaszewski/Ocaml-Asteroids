@@ -25,3 +25,4 @@ let spaceship_max_speed = 0.3;;
 let spaceship_size = 64;;
 
 let bullet_speed = 0.6;;
+let spaceship_size = 64;;

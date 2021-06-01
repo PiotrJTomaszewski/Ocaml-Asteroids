@@ -55,3 +55,10 @@ let put_texture render (x,y) texture l1 l2 angle_gr=
     let rect = Rect.make ((x-(l1/2)),(y-(l2/2))) (l1,l2) in
     Render.copyEx render ~texture:texture ~dst_rect:rect () ~angle:angle_gr;
     (* Render.render_present render;; *) (* We only have to call this function once every frame. Calling it after every drawn item is unnecessary *)
+;;
+let draw_rect_surf renderer surf pos col (w,h)=
+    Render.set_draw_color renderer ~rgb:col ~a:alpha;
+    let t = Texture.create_from_surface renderer surf in
+    put_texture renderer pos t  w h 0.0;
+    Texture.destroy t
+  ;;

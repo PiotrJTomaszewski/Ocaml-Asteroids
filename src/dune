@@ -3,7 +3,7 @@
  (public_name Asteroids)
  (name main)
 ;; (libraries Asteroids sdl2 lablgl))
-(libraries Asteroids sdl2 sdl2_img)
+(libraries Asteroids sdl2 sdl2_img sdl2_ttf)
 (link_flags -cclib -lSDL2)
 )
 (env
