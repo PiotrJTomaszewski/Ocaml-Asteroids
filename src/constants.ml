@@ -2,9 +2,9 @@ let window_height = 600;;
 
 let window_width = 800;;
 
-let min_meteor_speed = 0.1;;
+let min_meteor_speed = 0.05;;
 
-let max_meteor_speed = 0.3;;
+let max_meteor_speed = 0.15;;
 
 let max_meteor_init_size = 5;;
 
@@ -25,4 +25,3 @@ let spaceship_max_speed = 0.3;;
 let spaceship_size = 64;;
 
 let bullet_speed = 0.6;;
-let spaceship_size = 64;;

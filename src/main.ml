@@ -52,8 +52,9 @@ let main () =
     Render.clear renderer;
     Game.render_game renderer textures game font;
     Render.render_present renderer;
-    Timer.delay ~ms:16;
-    main_loop ( (event_loop game 5))
+    let delay = 16 in
+    Timer.delay ~ms:delay;
+    main_loop ( (event_loop game delay))
 
   in
     main_loop (Game.init ());;
