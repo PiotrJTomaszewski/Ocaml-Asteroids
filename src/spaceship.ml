@@ -20,11 +20,10 @@ let update_spaceship_position spaceship time_delta =
 
 
 let move_spaceship spaceship action =
-  let epsilon = 0.0001 in
   let new_speed = match action with
     | Up -> {
       x = spaceship.speed.x;
-      y = Utils.speed_limit (spaceship.speed.y -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
+      y =  Utils.speed_limit (spaceship.speed.y -. Constants.spaceship_speed_delta) Constants.spaceship_max_speed
     }
     | Down -> {
       x = spaceship.speed.x;
@@ -42,7 +41,7 @@ let move_spaceship spaceship action =
   in
   let new_angle =
     (* Keep the old angle if the spaceship is not moving *)
-    if abs_float new_speed.x < epsilon && abs_float new_speed.y < epsilon then
+    if abs_float new_speed.x < Float.epsilon && abs_float new_speed.y < Float.epsilon then
       spaceship.angle
     else
       57.32 *. atan2 new_speed.y new_speed.x +. 90.
