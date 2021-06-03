@@ -20,7 +20,7 @@ dim -> width X height (int *int)
 let draw_rect renderer pos col dim=
   Render.set_draw_color renderer ~rgb:col ~a:alpha;
   fill_rect renderer pos dim;
-  Render.render_present renderer;
+  (* Render.render_present renderer; *)
 ;;
 
 let get_tex renderer str =
