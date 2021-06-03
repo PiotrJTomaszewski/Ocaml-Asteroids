@@ -26,13 +26,12 @@ let spawn_bullet position angle =
 
 
 let update_bullet_position bullet time_delta =
-  let epsilon = 0.0001 in
   let new_position_x = bullet.position.x +. (bullet.speed.x *. time_delta) in
   let new_position_y = bullet.position.y +. (bullet.speed.y *. time_delta) in
   (* Remove bullets that have left the screen *)
   if 
-    new_position_x >= epsilon && float_of_int Constants.window_width -. new_position_x >= epsilon &&
-    new_position_y >= epsilon && float_of_int Constants.window_height -. new_position_y >= epsilon
+    new_position_x >= 0. && float_of_int Constants.window_width -. new_position_x >= 0. &&
+    new_position_y >= 0. && float_of_int Constants.window_height -. new_position_y >= 0.
   then
     Some({
       bullet with

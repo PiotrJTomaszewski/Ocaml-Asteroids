@@ -5,10 +5,12 @@ let red = (255,0,0)
 let black = (0,0,0)
 let alpha = 255
 
+
 let fill_rect renderer (x, y) (w,h) =
   let rect = Rect.make4 ~x:(x-w/2) ~y:(y-h/2) ~w:w ~h:h in
   Render.fill_rect renderer rect;
 ;;
+
 
 (*
 Draws a rectangle
@@ -23,11 +25,13 @@ let draw_rect renderer pos col dim=
   (* Render.render_present renderer; *)
 ;;
 
+
 let get_tex renderer str =
   let rw = RWops.from_file str "rb" in
   let img = Sdlimage.load_png_rw rw in
   RWops.free rw;
   Texture.create_from_surface renderer img
+
 
 (*
 UNSAFE!! because it must  length(list_names) == length(list_addresses)
@@ -56,6 +60,8 @@ let put_texture render (x,y) texture l1 l2 angle_gr=
     Render.copyEx render ~texture:texture ~dst_rect:rect () ~angle:angle_gr;
     (* Render.render_present render;; *) (* We only have to call this function once every frame. Calling it after every drawn item is unnecessary *)
 ;;
+
+
 let draw_rect_surf renderer surf pos col (w,h)=
     Render.set_draw_color renderer ~rgb:col ~a:alpha;
     let t = Texture.create_from_surface renderer surf in

@@ -4,6 +4,7 @@ open Common;;
 
 let close () = (Sdl.quit (); Sdlimage.quit ();Sdlttf.quit ();exit 0)
 
+
 let proc_events game ev = 
   match ev with
     Event.KeyDown { Event.keycode = Keycode.Left;_ } -> Game.process_inputs game Left
@@ -18,11 +19,13 @@ let proc_events game ev =
   | _ -> game
 ;;
 
+
 let rec event_loop game time_delta =
   match Event.poll_event () with
   | None -> Game.update_time game time_delta
   | Some ev ->
     event_loop (proc_events game ev) time_delta
+
 
 (*main function*)
 let main () =
@@ -58,5 +61,6 @@ let main () =
 
   in
     main_loop (Game.init ());;
+
 
 let () = main ()

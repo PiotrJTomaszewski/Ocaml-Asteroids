@@ -26,6 +26,8 @@ let init () = {
   meteors = init_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count);
   bullets = [];
 }
+
+
 let draw_text renderer game font=
 
   Show.draw_rect renderer (Constants.window_width/2,15) (50,50,50) (Constants.window_width,30);
@@ -37,6 +39,7 @@ let draw_text renderer game font=
   Show.draw_rect_surf renderer life_surf ((Constants.window_width/6),15) Show.black (98,40);
   Surface.free life_surf
 ;;
+
 
 let render_game renderer textures game font =
   let meteor_texture = (Show.TexMap.find "meteor" textures) in
@@ -72,9 +75,12 @@ let process_inputs game action =
       spaceship = new_spaceship;
       bullets = new_bullets
   }
-  
 ;;
+
+
 let in_collision r1 r2 (x,y) (a,b) tolerancy = (sqrt ((x-.a)*.(x-.a)+.(y-.b)*.(y-.b))) < (float_of_int (r1+r2-tolerancy))
+
+
 (*
   Collisions are detected with simple approximation. Objects are circles and it is checked if
     sum of 2 radii is is bigger then distance betwen center of objects
@@ -96,7 +102,8 @@ let bullet_vs_meteor  (bullet:Bullet.bullet_t) (meteor:Meteor.meteor_t) =
       (Common.pair_float_of_vectorf2d_t bullet.position)
       (Common.pair_float_of_vectorf2d_t meteor.position)  0 in 
   (Meteor.split_meteor_on_collision meteor condition,condition)
-  
+
+
 let check_meteors meteors bullet =
   let mapped = List.map (bullet_vs_meteor bullet) meteors in
   List.fold_left (fun (l1, b) (l2, cond) -> (l1@l2,cond||b)) ([], false) mapped 
@@ -110,6 +117,8 @@ let check_bullets bullets meteors =
     else let (meteors_stable, rest_of_bullets) = check_bullets_rec new_meteors tl in (meteors_stable,hd::rest_of_bullets)
   in
   check_bullets_rec meteors bullets
+
+
 let check_shoots (game:game_t) =
   let (new_meteors,new_bullets) = check_bullets game.bullets game.meteors in 
   {game with meteors=new_meteors; bullets=new_bullets};

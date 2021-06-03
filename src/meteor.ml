@@ -1,7 +1,6 @@
 type meteor_t = {
   position: Common.vectorf2d_t;
   speed: Common.vectorf2d_t;
-  (* color: Sdlpixel.rgb; *)
   size: int;
 }
 
