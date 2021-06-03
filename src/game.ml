@@ -9,9 +9,9 @@ type game_t = {
 }
 
 
-let rec init_meteors counter = match counter with
+let rec spawn_meteors counter = match counter with
   | 0 -> [Meteor.spawn_meteor ()];
-  | _ -> (init_meteors (counter-1))@[Meteor.spawn_meteor ()];
+  | _ -> (spawn_meteors (counter-1))@[Meteor.spawn_meteor ()];
 ;;
 
 
@@ -23,7 +23,7 @@ let init () = {
     speed = {x = 0.; y = 0.;};
     angle = 0.;
   };
-  meteors = init_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count);
+  meteors = spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count);
   bullets = [];
 }
 
@@ -51,12 +51,16 @@ let render_game renderer textures game font =
   ()
 
 
-let update_time game time_delta = 
+let update_time game time_delta =
+  let new_meteors = match game.meteors with
+  | [] -> spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count)
+  | _  -> game.meteors
+  in
   let time_delta_float = float_of_int time_delta in
   {
     game with
       spaceship = Spaceship.update_spaceship_position game.spaceship time_delta_float;
-      meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) game.meteors;
+      meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) new_meteors;
       bullets = List.filter_map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
   }
 
