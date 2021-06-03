@@ -123,6 +123,6 @@ let check_bullets bullets meteors =
   check_bullets_rec meteors bullets
 
 
-let check_shoots (game:game_t) =
+let check_shots (game:game_t) =
   let (new_meteors,new_bullets) = check_bullets game.bullets game.meteors in 
   {game with meteors=new_meteors; bullets=new_bullets};

@@ -43,7 +43,7 @@ let main () =
       ["./res/ufo.png";"./res/meteor.png"; "./res/placeholder.png"] 
   in
   let rec main_loop game1 =
-    let game  = (Game.check_shoots game1)in
+    let game  = (Game.check_shots game1)in
     match Game.check_collision game with
     true -> main_loop (
       {
