@@ -18,6 +18,8 @@ let max_meteor_split = 3;;
 
 let meteor_size_scale = 20;;
 
+let meteor_score = 100;;
+
 let spaceship_speed_delta = 0.1;;
 
 let spaceship_max_speed = 0.3;;

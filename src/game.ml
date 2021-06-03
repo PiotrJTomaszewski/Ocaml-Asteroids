@@ -110,19 +110,19 @@ let bullet_vs_meteor  (bullet:Bullet.bullet_t) (meteor:Meteor.meteor_t) =
 
 let check_meteors meteors bullet =
   let mapped = List.map (bullet_vs_meteor bullet) meteors in
-  List.fold_left (fun (l1, b) (l2, cond) -> (l1@l2,cond||b)) ([], false) mapped 
+  List.fold_left (fun ((l1, score1), b) ((l2, score2), cond) -> ((l1@l2,score1+score2),cond||b)) (([], 0), false) mapped 
   
 
-let check_bullets bullets meteors = 
-  let rec check_bullets_rec meteors_rec = function
-  [] -> (meteors_rec,[])
-  | hd::tl -> let (new_meteors,condition) = check_meteors meteors_rec hd in
-    if condition then check_bullets_rec new_meteors tl 
-    else let (meteors_stable, rest_of_bullets) = check_bullets_rec new_meteors tl in (meteors_stable,hd::rest_of_bullets)
+let check_bullets bullets meteors score = 
+  let rec check_bullets_rec meteors_rec score = function
+  [] -> (meteors_rec, score, [])
+  | hd::tl -> let ((new_meteors, score_delta), condition) = check_meteors meteors_rec hd in
+    if condition then check_bullets_rec new_meteors (score+score_delta) tl 
+    else let (meteors_stable, score, rest_of_bullets) = check_bullets_rec new_meteors score tl in (meteors_stable, score, hd::rest_of_bullets)
   in
-  check_bullets_rec meteors bullets
+  check_bullets_rec meteors score bullets
 
 
 let check_shots (game:game_t) =
-  let (new_meteors,new_bullets) = check_bullets game.bullets game.meteors in 
-  {game with meteors=new_meteors; bullets=new_bullets};
+  let (new_meteors, new_score, new_bullets) = check_bullets game.bullets game.meteors game.score in 
+  {game with meteors=new_meteors; score=new_score; bullets=new_bullets};

@@ -55,11 +55,11 @@ let split_meteor_on_collision meteor is_collision =
   in
   if is_collision then
     if meteor.size > 1 then
-      _inner meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split)
+      _inner meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split), meteor.size * Constants.meteor_score
     else
-      []
+      [], Constants.meteor_score
    else
-    [meteor]
+    [meteor], 0
 
 
 let render_meteor renderer texture meteor =
