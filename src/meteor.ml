@@ -39,24 +39,23 @@ let update_meteor_position meteor time_delta =
   }
 
 
-let rec _split_meteor_loop position  size counter =
-  (* Splitted meteors can skew slightly into a new direction *)
-  match counter with
-    | 0 -> []
-    | _ -> (_split_meteor_loop position size (counter-1))@[{
-      position = position;
-      speed = {
-        x = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed;
-        y = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed
-      };
-      size = size;
-      }]
-
-
 let split_meteor_on_collision meteor is_collision =
+  let rec _inner position  size counter =
+    (* Splitted meteors can skew slightly into a new direction *)
+    match counter with
+      | 0 -> []
+      | _ -> (_inner position size (counter-1))@[{
+        position = position;
+        speed = {
+          x = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed;
+          y = Utils.random_float Constants.min_meteor_speed Constants.max_meteor_speed
+        };
+        size = size;
+        }]
+  in
   if is_collision then
     if meteor.size > 1 then
-      _split_meteor_loop meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split)
+      _inner meteor.position (meteor.size - 1) (Utils.random_int Constants.min_meteor_split Constants.max_meteor_split)
     else
       []
    else
