@@ -4,7 +4,6 @@ open Common;;
 
 let close () = (Sdl.quit (); Sdlimage.quit ();Sdlttf.quit ();exit 0)
 
-
 let proc_events game ev = 
   match ev with
     Event.KeyDown { Event.keycode = Keycode.Left;_ } -> Game.process_inputs game Left
@@ -19,13 +18,11 @@ let proc_events game ev =
   | _ -> game
 ;;
 
-
 let rec event_loop game time_delta =
   match Event.poll_event () with
   | None -> Game.update_time game time_delta
   | Some ev ->
     event_loop (proc_events game ev) time_delta
-
 
 (*main function*)
 let main () =
@@ -46,14 +43,20 @@ let main () =
     let game  = (Game.check_shots game1)in
     match Game.check_collision game with
     true -> main_loop (
-      {
-        (Game.init ()) with 
-        lifes = (game.lifes-1)
-      }
+      Game.handle_spaceship_crash game
     ) 
     | _ -> Render.set_draw_color renderer ~rgb:Show.black ~a:Show.alpha;
     Render.clear renderer;
     Game.render_game renderer textures game font;
+    if Game.is_game_over game then (
+      let game_over_surf = Sdlttf.render_text_solid font "Game Over" {r = 255; g=255; b=255; a=255;} in
+      Show.draw_rect_surf renderer game_over_surf ((Constants.window_width/2),(Constants.window_height/2 - 50)) Show.black (10 * 18 + 70,40);
+      Surface.free game_over_surf;
+      let restart_surf = Sdlttf.render_text_solid font "Press R" {r = 255; g=255; b=255; a=255;} in
+      Show.draw_rect_surf renderer restart_surf ((Constants.window_width/2),(Constants.window_height/2 + 50)) Show.black (8 * 18 + 70,40);
+      Surface.free restart_surf
+    );
+
     Render.render_present renderer;
     let delay = 16 in
     Timer.delay ~ms:delay;
@@ -61,6 +64,5 @@ let main () =
 
   in
     main_loop (Game.init ());;
-
 
 let () = main ()

@@ -28,8 +28,32 @@ let init () = {
 }
 
 
-let draw_text renderer game font=
+(* Checks whether game is over *)
+let is_game_over game =
+  game.lifes < 0
 
+
+let handle_spaceship_crash game = 
+  let new_game = {
+    score = game.score;
+    lifes = game.lifes - 1;
+    spaceship = {
+      position = {x = float_of_int (Constants.window_width/2); y = float_of_int (Constants.window_height/2);};
+      speed = {x = 0.; y = 0.;};
+      angle = 0.;
+    };
+    meteors = spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count);
+    bullets = [];
+  }
+  in
+  (* If the game is over place the spaceship outside the screen *)
+  if is_game_over new_game then
+    {new_game with spaceship = {new_game.spaceship with position = {x = -.1000.; y = -.1000.}}}
+  else
+    new_game
+
+
+let draw_text renderer game font=
   Show.draw_rect renderer (Constants.window_width/2,15) (50,50,50) (Constants.window_width,30);
   let length = Int.of_float (log10 (Float.of_int game.score)) + 1 in
   let score_surf = Sdlttf.render_text_solid font (String.concat ""  ["Score:";string_of_int game.score]) {r = 255; g=255; b=255; a=255;} in
@@ -57,9 +81,16 @@ let update_time game time_delta =
   | _  -> game.meteors
   in
   let time_delta_float = float_of_int time_delta in
+  (* Disable spaceship movement when the game is over *)
+  let new_spaceship =
+    if is_game_over game then
+      game.spaceship
+    else
+      Spaceship.update_spaceship_position game.spaceship time_delta_float
+  in
   {
     game with
-      spaceship = Spaceship.update_spaceship_position game.spaceship time_delta_float;
+      spaceship = new_spaceship;
       meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) new_meteors;
       bullets = List.filter_map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
   }
