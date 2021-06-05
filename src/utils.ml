@@ -14,7 +14,7 @@ let speed_limit speed limit =
     max speed (-.limit)
 ;;
 
-
+(*calculates new position also checks if edge has been reached and move to opposite edge*)
 let update_position_with_warp position speed obj_pixel_size time_delta =
   let calculated_position_x = position.x +. (speed.x *. time_delta) in
   let calculated_position_y = position.y +. (speed.y *. time_delta) in

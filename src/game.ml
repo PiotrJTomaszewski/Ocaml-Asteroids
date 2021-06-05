@@ -1,5 +1,5 @@
 open Sdl
-
+(* type describing state of game*)
 type game_t = {
   score: int;
   lifes: int;
@@ -14,7 +14,7 @@ let rec spawn_meteors counter = match counter with
   | _ -> (spawn_meteors (counter-1))@[Meteor.spawn_meteor ()];
 ;;
 
-
+(*initial state*)
 let init () = {
   score = 0;
   lifes = 3;
@@ -52,10 +52,10 @@ let handle_spaceship_crash game =
   else
     new_game
 
-
+(*putting score and lifes*)
 let draw_text renderer game font=
   Show.draw_rect renderer (Constants.window_width/2,15) (50,50,50) (Constants.window_width,30);
-  let length = Int.of_float (log10 (Float.of_int game.score)) + 1 in
+  let length = Int.of_float (log10 (Float.of_int game.score)) + 1 in (*length of number*)
   let score_surf = Sdlttf.render_text_solid font (String.concat ""  ["Score:";string_of_int game.score]) {r = 255; g=255; b=255; a=255;} in
   Show.draw_rect_surf renderer score_surf ((Constants.window_width/4) * 3,15) Show.black (length * 18 + 70,40);
   Surface.free score_surf;
@@ -74,7 +74,7 @@ let render_game renderer textures game font =
   Spaceship.render_spaceship renderer (Show.TexMap.find "ufo" textures) game.spaceship;
   ()
 
-
+(*moving everything*)
 let update_time game time_delta =
   let new_meteors = match game.meteors with
   | [] -> spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count)
@@ -95,7 +95,7 @@ let update_time game time_delta =
       bullets = List.filter_map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
   }
 
-
+(*changing state of game due to action caused by ecent in Main.proc_events*)
 let process_inputs game action =
   let new_spaceship = Spaceship.move_spaceship game.spaceship action in
   let new_bullets =
@@ -113,13 +113,14 @@ let process_inputs game action =
 ;;
 
 
-let in_collision r1 r2 (x,y) (a,b) tolerancy = (sqrt ((x-.a)*.(x-.a)+.(y-.b)*.(y-.b))) < (float_of_int (r1+r2-tolerancy))
 
 
 (*
   Collisions are detected with simple approximation. Objects are circles and it is checked if
-    sum of 2 radii is is bigger then distance betwen center of objects
+    sum of 2 radii is is bigger then distance betwen centers of objects with tolerance in pixels
 *)
+let in_collision r1 r2 (x,y) (a,b) tolerancy = (sqrt ((x-.a)*.(x-.a)+.(y-.b)*.(y-.b))) < (float_of_int (r1+r2-tolerancy))
+(*checking collision of spaceship and meteor*)
 let check_collision (game:game_t) =
   let ship_vs_meteor (meteor:Meteor.meteor_t) = 
     let size = meteor.size * Constants.meteor_size_scale in
@@ -130,30 +131,35 @@ let check_collision (game:game_t) =
   List.fold_right (|| ) collided false
   ;;
 
-  
+(*checking collision of meteor and bullet*)
 let bullet_vs_meteor  (bullet:Bullet.bullet_t) (meteor:Meteor.meteor_t) = 
     let size = meteor.size * Constants.meteor_size_scale in
     let condition = in_collision 16 (size/2) 
       (Common.pair_float_of_vectorf2d_t bullet.position)
-      (Common.pair_float_of_vectorf2d_t meteor.position)  0 in 
+      (Common.pair_float_of_vectorf2d_t meteor.position)  8 in 
   (Meteor.split_meteor_on_collision meteor condition,condition)
 
 
+(*checking for if given bullet hit any meteor*)
 let check_meteors meteors bullet =
   let mapped = List.map (bullet_vs_meteor bullet) meteors in
   List.fold_left (fun ((l1, score1), b) ((l2, score2), cond) -> ((l1@l2,score1+score2),cond||b)) (([], 0), false) mapped 
   
 
+(*aplying check_meteors for every bullet*)
 let check_bullets bullets meteors score = 
   let rec check_bullets_rec meteors_rec score = function
   [] -> (meteors_rec, score, [])
   | hd::tl -> let ((new_meteors, score_delta), condition) = check_meteors meteors_rec hd in
-    if condition then check_bullets_rec new_meteors (score+score_delta) tl 
-    else let (meteors_stable, score, rest_of_bullets) = check_bullets_rec new_meteors score tl in (meteors_stable, score, hd::rest_of_bullets)
+      if condition then 
+        check_bullets_rec new_meteors (score+score_delta) tl 
+      else 
+        let (meteors_stable, score, rest_of_bullets) = check_bullets_rec new_meteors score tl in 
+          (meteors_stable, score, hd::rest_of_bullets)
   in
   check_bullets_rec meteors score bullets
 
-
+(*exexcuting check_bullets with data from state of game*)
 let check_shots (game:game_t) =
   let (new_meteors, new_score, new_bullets) = check_bullets game.bullets game.meteors game.score in 
   {game with meteors=new_meteors; score=new_score; bullets=new_bullets};

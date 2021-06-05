@@ -26,7 +26,6 @@ let spawn_meteor () =
     size = size;
   }
 
-
 let update_meteor_position meteor time_delta =
   let meteor_pixel_size = float_of_int(meteor.size * Constants.meteor_size_scale) in
   let new_position = Utils.update_position_with_warp meteor.position meteor.speed meteor_pixel_size time_delta in

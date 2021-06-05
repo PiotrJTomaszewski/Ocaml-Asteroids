@@ -1,5 +1,5 @@
 open Common;;
-
+(*position - center of bullet*)
 type bullet_t = {
   position: Common.vectorf2d_t;
   speed: Common.vectorf2d_t;
@@ -7,7 +7,7 @@ type bullet_t = {
 };;
 
 
-let spawn_bullet position angle =
+let spawn_bullet position angle = (*generating new bullet in given position *)
   let theta = (angle -. 90.) *. 0.0174532 in
   let speed_x = cos theta *. Constants.bullet_speed in
   let speed_y = sin theta *. Constants.bullet_speed in
