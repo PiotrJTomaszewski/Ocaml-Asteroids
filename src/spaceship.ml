@@ -1,5 +1,6 @@
 open Common;;
 
+
 type spaceship_t = {
   position: vectorf2d_t;
   speed: vectorf2d_t;
@@ -7,18 +8,18 @@ type spaceship_t = {
 }
 
 
+(* Calculate spaceship position on a new frame *)
 let update_spaceship_position spaceship time_delta =
   (* In the original game when the spaceship leaves the screen it teleports to the opposite site *)
-  let new_position = Utils.update_position_with_warp spaceship.position spaceship.speed (float_of_int Constants.spaceship_size) time_delta in
   {
     spaceship with
-      position = {
-        x = new_position.x;
-        y = new_position.y;
-      };
+      position =
+        Utils.update_position_with_warp spaceship.position spaceship.speed (float_of_int Constants.spaceship_size) time_delta
+      ;
   }
 
 
+(* Change spaceship speed and angle in accordance with the input action *)
 let move_spaceship spaceship action =
   let new_speed = match action with
     | Up -> {
@@ -44,6 +45,7 @@ let move_spaceship spaceship action =
     if abs_float new_speed.x < Float.epsilon && abs_float new_speed.y < Float.epsilon then
       spaceship.angle
     else
+      (* 180 / PI ~= 57.32 *)
       57.32 *. atan2 new_speed.y new_speed.x +. 90.
   in
   {

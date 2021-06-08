@@ -1,5 +1,7 @@
 open Common;;
-(*position - center of bullet*)
+
+
+(* position - center of bullet *)
 type bullet_t = {
   position: Common.vectorf2d_t;
   speed: Common.vectorf2d_t;
@@ -7,7 +9,8 @@ type bullet_t = {
 };;
 
 
-let spawn_bullet position angle = (*generating new bullet in given position *)
+(* Generating new bullet in given position *)
+let spawn_bullet position angle =
   let theta = (angle -. 90.) *. 0.0174532 in
   let speed_x = cos theta *. Constants.bullet_speed in
   let speed_y = sin theta *. Constants.bullet_speed in
@@ -25,6 +28,10 @@ let spawn_bullet position angle = (*generating new bullet in given position *)
  }
 
 
+(* Calculating new bullet position on each frame.
+  time-delta - number of milliseconds since the last frame
+  returns None if the bullet has left the screen
+ *)
 let update_bullet_position bullet time_delta =
   let new_position_x = bullet.position.x +. (bullet.speed.x *. time_delta) in
   let new_position_y = bullet.position.y +. (bullet.speed.y *. time_delta) in

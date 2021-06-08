@@ -1,8 +1,10 @@
 open Sdl;;
 open Common;;
 
+
 (*closing game*)
 let close () = (Sdl.quit (); Sdlimage.quit ();Sdlttf.quit ();exit 0)
+
 
 (*checking value of event ev and genering next state of game*)
 let proc_events game ev = 
@@ -18,6 +20,8 @@ let proc_events game ev =
   | Event.Window_Event {Event.kind = Event.WindowEvent_Close;_} -> close ()
   | _ -> game
 ;;
+
+
 (*checking if there is any event*)
 let rec event_loop game time_delta =
   match Event.poll_event () with
@@ -25,6 +29,7 @@ let rec event_loop game time_delta =
   | Some ev ->
     event_loop (proc_events game ev) time_delta (*executing the action for catched event*)
   
+
 (*main function*)
 let main () =
   Sdl.init [`VIDEO];(*initialization of sdl2 subsystem*)
@@ -53,10 +58,11 @@ let main () =
       );
       Render.render_present renderer;
       let delay = 16 in
-        Timer.delay ~ms:delay;
-      main_loop ( (event_loop game delay))
+      Timer.delay ~ms:delay;
+      main_loop (event_loop game delay)
 
   in
     main_loop (Game.init ());;
+
 
 let () = main ()
