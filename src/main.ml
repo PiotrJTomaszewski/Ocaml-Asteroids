@@ -44,11 +44,11 @@ let main () =
       ["ufo"; "meteor"; "bullet"] 
       ["./res/ufo.png";"./res/meteor.png"; "./res/laser.png"] 
   in
-  let rec main_loop game1 =
+  let rec main_loop game1 last_millis =
     let game  = Game.check_shots game1 in (*checking if any bullet has shot any meteor*)
     if Game.check_collision game then main_loop (
           Game.handle_spaceship_crash game
-        ) 
+        ) last_millis
     else 
       Render.set_draw_color renderer ~rgb:Show.black ~a:Show.alpha; 
       Render.clear renderer;
@@ -57,12 +57,12 @@ let main () =
         Show.game_over_text renderer font;
       );
       Render.render_present renderer;
-      let delay = 16 in
-      Timer.delay ~ms:delay;
-      main_loop (event_loop game delay)
+      let current_millis = Sdltimer.get_ticks () in
+      let loop_time = current_millis- last_millis in
+      main_loop (event_loop game loop_time) current_millis 
 
   in
-    main_loop (Game.init ());;
+    main_loop (Game.init ()) (Sdltimer.get_ticks ());;
 
 
 let () = main ()
