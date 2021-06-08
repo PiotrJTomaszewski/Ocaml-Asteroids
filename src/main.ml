@@ -29,7 +29,8 @@ let rec event_loop game time_delta =
   | Some ev ->
     event_loop (proc_events game ev) time_delta (*executing the action for catched event*)
   
-
+let speed_time x  y = let speed = int_of_float(log (float_of_int x) *. float_of_int y /. 1.5) in
+    if(speed < y) then y else speed
 (*main function*)
 let main () =
   Sdl.init [`VIDEO];(*initialization of sdl2 subsystem*)
@@ -58,8 +59,8 @@ let main () =
       );
       Render.render_present renderer;
       let current_millis = Sdltimer.get_ticks () in
-      let loop_time = current_millis- last_millis in
-      main_loop (event_loop game loop_time) current_millis 
+      let loop_time = speed_time game.rounds (current_millis- last_millis) in
+      main_loop (event_loop game loop_time) (current_millis) 
 
   in
     main_loop (Game.init ()) (Sdltimer.get_ticks ());;

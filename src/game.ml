@@ -5,6 +5,7 @@ open Sdl
 type game_t = {
   score: int;
   lifes: int;
+  rounds: int;
   spaceship: Spaceship.spaceship_t;
   meteors: Meteor.meteor_t list;
   bullets: Bullet.bullet_t list;
@@ -20,6 +21,7 @@ let rec spawn_meteors counter = match counter with
 
 (*initial state*)
 let init () = {
+  rounds = 1;
   score = 0;
   lifes = 3;
   spaceship = {
@@ -39,6 +41,7 @@ let is_game_over game =
 
 let handle_spaceship_crash game = 
   let new_game = {
+    rounds = game.rounds;
     score = game.score;
     lifes = game.lifes - 1;
     spaceship = {
@@ -66,7 +69,10 @@ let draw_text renderer game font=
   Surface.free score_surf;
   let life_surf = Sdlttf.render_text_solid font (String.concat "" ["Lifes:";string_of_int game.lifes]) {r = 255; g=255; b=255; a=255;} in
   Show.draw_rect_surf renderer life_surf ((Constants.window_width/6),15) Show.black (98,40);
-  Surface.free life_surf
+  Surface.free life_surf;
+  let round_surf = Sdlttf.render_text_solid font (String.concat "" ["Round:";string_of_int game.rounds]) {r = 255; g=255; b=255; a=255;} in
+  Show.draw_rect_surf renderer round_surf ((Constants.window_width/2),15) Show.black (98,40);
+  Surface.free round_surf
 ;;
 
 
@@ -82,9 +88,9 @@ let render_game renderer textures game font =
 
 (* Moving everything *)
 let update_time game time_delta =
-  let new_meteors = match game.meteors with
-  | [] -> spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count)
-  | _  -> game.meteors
+  let (new_meteors, new_round) = match game.meteors with
+  | [] -> (spawn_meteors (Random.int (Constants.max_metor_init_count - Constants.min_meteor_init_count) + Constants.min_meteor_init_count),game.rounds+1)
+  | _  -> (game.meteors,game.rounds)
   in
   let time_delta_float = float_of_int time_delta in
   (* Disable spaceship movement when the game is over *)
@@ -96,6 +102,7 @@ let update_time game time_delta =
   in
   {
     game with
+      rounds = new_round;
       spaceship = new_spaceship;
       meteors = List.map (fun m -> Meteor.update_meteor_position m time_delta_float) new_meteors;
       bullets = List.filter_map (fun b -> Bullet.update_bullet_position b time_delta_float) game.bullets
